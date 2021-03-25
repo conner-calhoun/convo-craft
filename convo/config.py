@@ -1,5 +1,7 @@
 # Window configurations
 
+DEFAULT_THEME = 'Cherry'
+
 DEFAULT_WINDOW_SIZE = (1200, 720)
 
 MENU_CONFIG = {
