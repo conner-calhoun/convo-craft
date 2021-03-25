@@ -15,4 +15,5 @@ MENU_CONFIG = {
     'no_collapse': True
 }
 
-THEMES = ['Dark', 'Light', 'Classic', 'Dark 2', 'Grey', 'Dark Grey', 'Cherry', 'Purple', 'Gold', 'Red']
+THEMES = ['Dark', 'Light', 'Classic', 'Dark 2', 'Grey',
+          'Dark Grey', 'Cherry', 'Purple', 'Gold', 'Red']

@@ -2,14 +2,45 @@ from dearpygui import core, simple
 
 from convo import config, dialogue
 
+
 class View:
     '''
     Base View Class
     '''
+
     def __init__(self):
         self.title = ''
 
-class MainMenu:
+    def draw(self):
+        '''
+        Must Implement
+        '''
+        raise NotImplementedError
+
+    def refresh(self):
+        '''
+        Refreshes the MainMenu
+
+        usage -- NOTE: draw() must be called before refresh()
+        '''
+        core.delete_item(self.title)
+        self.draw()
+
+
+class DialogueEditor(View):
+    '''
+    Dialogue Node Editor
+    '''
+
+    def __init__(self):
+        pass
+
+
+class MainMenu(View):
+    '''
+    Titlebar / MainMenu class
+    '''
+
     def __init__(self):
         self.tree = dialogue.DialogueTree()
         self.active_theme = config.DEFAULT_THEME
@@ -34,14 +65,8 @@ class MainMenu:
                     with simple.menu('Theme'):
                         for theme in config.THEMES:
                             # TODO find a way to have the default theme "checked" by default
-                            core.add_menu_item(theme, callback=self.set_theme, check=True)
-
-    def refresh(self):
-        '''
-        Refreshes the MainMenu
-        '''
-        core.delete_item(self.title)
-        self.draw()
+                            core.add_menu_item(
+                                theme, callback=self.set_theme, check=True)
 
     def new(self):
         '''
@@ -81,4 +106,4 @@ class MainMenu:
         Sets the theme
         '''
         core.set_theme(theme)
-        self.active_theme=theme
+        self.active_theme = theme
