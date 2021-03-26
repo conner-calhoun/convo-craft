@@ -34,11 +34,18 @@ class DialogueTree:
     DialogueTree, keeps a list of nodes (Prompts and Responses)
     '''
 
-    def __init__(self, name='default_name'):
+    def __init__(self, name=None):
         self.name = name
         self.nodes = []
 
+    def add_prompt(self):
+        self.nodes += Prompt()
+
+    def add_response(self):
+        self.nodes += Response()
+
     def to_json(self):
         return json.dumps({
-            'name': self.name
+            'name': self.name,
+            'nodes': self.nodes
         })

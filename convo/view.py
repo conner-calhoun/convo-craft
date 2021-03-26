@@ -68,6 +68,13 @@ class MainMenu(View):
                             core.add_menu_item(
                                 theme, callback=self.set_theme, check=True)
 
+            core.add_button("New Prompt", callback=self.new_prompt)
+            core.add_button("New Response", callback=self.new_response)
+            core.add_separator()
+
+            with simple.node_editor("Dialogue Tree"):
+                pass
+
     def new(self):
         '''
         Creates a new dialogue menu
@@ -89,7 +96,10 @@ class MainMenu(View):
         Save Callback
         '''
         # TODO: save the following
-        self.tree.to_json()
+        if self.tree.name:
+            self.tree.to_json()
+        else:
+            self.save_as()
 
     def save_as(self):
         '''
@@ -99,7 +109,7 @@ class MainMenu(View):
         filename = 'replace-me'
         self.tree.name = filename
 
-        self.save
+        self.save()
 
     def set_theme(self, theme):
         '''
@@ -107,3 +117,9 @@ class MainMenu(View):
         '''
         core.set_theme(theme)
         self.active_theme = theme
+
+    def new_prompt(self):
+        pass
+
+    def new_response(self):
+        pass
