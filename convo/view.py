@@ -46,6 +46,9 @@ class MainMenu(View):
         self.active_theme = config.DEFAULT_THEME
         self.title = 'Convo-Craft'
 
+        self.node_index = 0
+        self.nodes = {}
+
         self.draw()
 
     def draw(self):
@@ -68,12 +71,13 @@ class MainMenu(View):
                             core.add_menu_item(
                                 theme, callback=self.set_theme, check=True)
 
-            core.add_button("New Prompt", callback=self.new_prompt)
-            core.add_button("New Response", callback=self.new_response)
-            core.add_separator()
-
             with simple.node_editor("Dialogue Tree"):
-                pass
+                # Add the root node
+                self.create_node()
+
+                # Add some sample responses for now
+                self.add_response()
+                self.add_response()
 
     def new(self):
         '''
@@ -118,8 +122,30 @@ class MainMenu(View):
         core.set_theme(theme)
         self.active_theme = theme
 
-    def new_prompt(self):
-        pass
+    def add_response(self):
+        '''
+        Creates a response node
+        '''
+        self.create_node("Response")
 
-    def new_response(self):
-        pass
+    def create_node(self, node_type="Root Prompt"):
+        '''
+        Creates a node
+        '''
+        node_name = "{0}\nID: {1}##{1}".format(node_type, self.node_index)
+
+        with simple.node(node_name):
+            with simple.node_attribute("Input##{}".format(self.node_index)):
+                pass
+            with simple.node_attribute("Output##{}".format(self.node_index), output=True):
+                core.add_input_text("Text##{}".format(
+                    self.node_index), width=200, height=200)
+
+        self.nodes[self.node_index] = node_name
+
+        if node_type == "Response":
+            self.tree.add_response()
+        else:
+            self.tree.add_prompt()
+
+        self.node_index += 1

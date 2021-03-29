@@ -3,7 +3,12 @@ from dearpygui import core, simple
 import json
 
 
-class Prompt:
+class Node:
+    def __init__(self):
+        self.id = 0
+
+
+class Prompt(Node):
     '''
     Prompt Class
     '''
@@ -13,10 +18,12 @@ class Prompt:
         pass
 
     def to_json(self):
-        pass
+        return {
+            'id': self.id
+        }
 
 
-class Response:
+class Response(Node):
     '''
     Response Class
     '''
@@ -26,7 +33,9 @@ class Response:
         pass
 
     def to_json(self):
-        pass
+        return {
+            'id': self.id
+        }
 
 
 class DialogueTree:
@@ -39,13 +48,13 @@ class DialogueTree:
         self.nodes = []
 
     def add_prompt(self):
-        self.nodes += Prompt()
+        self.nodes.append(Prompt())
 
     def add_response(self):
-        self.nodes += Response()
+        self.nodes.append(Response())
 
     def to_json(self):
         return json.dumps({
             'name': self.name,
-            'nodes': self.nodes
+            'nodes': [node.to_json() for node in self.nodes]
         })
