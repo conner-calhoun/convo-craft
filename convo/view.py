@@ -148,7 +148,7 @@ class MainMenu(View):
                 core.add_input_text("Text##{}".format(
                     self.node_index), width=200, height=200)
             with simple.node_attribute("IsEnd##{}".format(self.node_index), static=True):
-                core.add_checkbox("IS End##{}".format(self.node_index))
+                core.add_checkbox("Is End##{}".format(self.node_index))
 
         self.nodes[self.node_index] = node_name
 
