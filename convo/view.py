@@ -71,6 +71,11 @@ class MainMenu(View):
                             core.add_menu_item(
                                 theme, callback=self.set_theme, check=True)
 
+            if self.tree.name:
+                core.add_text("Tree: {}".format(self.tree.name))
+            else:
+                core.add_text("Tree: <unnamed>.json")
+
             with simple.node_editor("Dialogue Tree"):
                 # Add the root node
                 self.create_node()
@@ -132,14 +137,18 @@ class MainMenu(View):
         '''
         Creates a node
         '''
-        node_name = "{0}\nID: {1}##{1}".format(node_type, self.node_index)
+        node_name = "{}##{}".format(node_type, self.node_index)
 
         with simple.node(node_name):
+            with simple.node_attribute("ID##{0}".format(self.node_index), static=True):
+                core.add_text("ID: {}".format(self.node_index))
             with simple.node_attribute("Input##{}".format(self.node_index)):
                 pass
             with simple.node_attribute("Output##{}".format(self.node_index), output=True):
                 core.add_input_text("Text##{}".format(
                     self.node_index), width=200, height=200)
+            with simple.node_attribute("IsEnd##{}".format(self.node_index), static=True):
+                core.add_checkbox("IS End##{}".format(self.node_index))
 
         self.nodes[self.node_index] = node_name
 
