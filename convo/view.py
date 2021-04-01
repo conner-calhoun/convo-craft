@@ -33,23 +33,88 @@ class DialogueEditor(View):
     '''
 
     def __init__(self):
-        pass
-
-
-class MainMenu(View):
-    '''
-    Titlebar / MainMenu class
-    '''
-
-    def __init__(self):
         self.tree = dialogue.DialogueTree()
-        self.active_theme = config.DEFAULT_THEME
-        self.title = 'Convo-Craft'
-
         self.node_index = 0
         self.nodes = {}
 
-        self.draw()
+    def draw(self):
+        '''
+        Draw the editor
+        '''
+        # TODO: Add simple node button bar
+        with simple.node_editor("Dialogue Tree"):
+            # Add the root node
+            self.create_node()
+
+            # Add some sample responses for now
+            self.add_response()
+            self.add_response()
+
+    def get_name(self):
+        '''
+        Accessor for tree name
+        '''
+        return self.tree.name
+
+    def set_name(self, name: str):
+        '''
+        Setter for tree name
+        '''
+        self.tree.name = name
+
+    def add_response(self):
+        '''
+        Creates a response node
+        '''
+        self.create_node("Response")
+
+    def get_text_by_index(self, idx: int) -> any:
+        '''
+        Access the text from a node by specific index
+        '''
+        return core.get_value('##Text_{}'.format(idx))
+
+    def create_node(self, node_type: str = "Root Prompt"):
+        '''
+        Creates a node
+        '''
+        node_name = "{}##{}".format(node_type, self.node_index)
+
+        with simple.node(node_name):
+            with simple.node_attribute("ID##{0}".format(self.node_index), static=True):
+                core.add_text("ID: {}".format(self.node_index))
+            with simple.node_attribute("Input##{}".format(self.node_index)):
+                pass
+
+            with simple.node_attribute("TextBox##{}".format(self.node_index), static=True):
+                core.add_input_text("##Text_{}".format(
+                    self.node_index), width=200, height=50, multiline=True)
+
+            core.add_node_attribute(
+                "Output##{}".format(self.node_index), output=True)
+            with simple.node_attribute("IsEnd##{}".format(self.node_index), static=True):
+                core.add_checkbox("Is End##{}".format(self.node_index))
+
+        self.nodes[self.node_index] = node_name
+
+        if node_type == "Response":
+            self.tree.add_response()
+        else:
+            self.tree.add_prompt()
+
+        self.node_index += 1
+
+
+class MainView(View):
+    '''
+    Main View class
+    '''
+
+    def __init__(self):
+        self.active_theme = config.DEFAULT_THEME
+        self.title = 'Convo-Craft'
+
+        self.dedit = DialogueEditor()
 
     def draw(self):
         '''
@@ -67,22 +132,15 @@ class MainMenu(View):
                 with simple.menu('Settings'):
                     with simple.menu('Theme'):
                         for theme in config.THEMES:
-                            # TODO find a way to have the default theme "checked" by default
                             core.add_menu_item(
                                 theme, callback=self.set_theme, check=True)
 
-            if self.tree.name:
-                core.add_text("Tree: {}".format(self.tree.name))
+            if self.dedit.get_name():
+                core.add_text("Tree: {}".format(self.dedit.get_name()))
             else:
                 core.add_text("Tree: <unnamed>.json")
 
-            with simple.node_editor("Dialogue Tree"):
-                # Add the root node
-                self.create_node()
-
-                # Add some sample responses for now
-                self.add_response()
-                self.add_response()
+            self.dedit.draw()
 
     def new(self):
         '''
@@ -105,8 +163,8 @@ class MainMenu(View):
         Save Callback
         '''
         # TODO: save the following
-        if self.tree.name:
-            self.tree.to_json()
+        if self.dedit.get_name():
+            self.dedit.tree.to_json()
         else:
             self.save_as()
 
@@ -116,7 +174,7 @@ class MainMenu(View):
         '''
         # TODO: open a modal, take in a filename, and save the json file
         filename = 'replace-me'
-        self.tree.name = filename
+        self.dedit.set_name(filename)
 
         self.save()
 
@@ -126,35 +184,3 @@ class MainMenu(View):
         '''
         core.set_theme(theme)
         self.active_theme = theme
-
-    def add_response(self):
-        '''
-        Creates a response node
-        '''
-        self.create_node("Response")
-
-    def create_node(self, node_type="Root Prompt"):
-        '''
-        Creates a node
-        '''
-        node_name = "{}##{}".format(node_type, self.node_index)
-
-        with simple.node(node_name):
-            with simple.node_attribute("ID##{0}".format(self.node_index), static=True):
-                core.add_text("ID: {}".format(self.node_index))
-            with simple.node_attribute("Input##{}".format(self.node_index)):
-                pass
-            with simple.node_attribute("Output##{}".format(self.node_index), output=True):
-                core.add_input_text("Text##{}".format(
-                    self.node_index), width=200, height=200)
-            with simple.node_attribute("IsEnd##{}".format(self.node_index), static=True):
-                core.add_checkbox("Is End##{}".format(self.node_index))
-
-        self.nodes[self.node_index] = node_name
-
-        if node_type == "Response":
-            self.tree.add_response()
-        else:
-            self.tree.add_prompt()
-
-        self.node_index += 1
