@@ -28,6 +28,10 @@ class Response(Node):
     Response Class
     '''
 
+    def __init__(self):
+        self.is_end = False
+        self.has_callback = False
+
     def draw_node(self):
         # TODO: draw the imnode
         pass

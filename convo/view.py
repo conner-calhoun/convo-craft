@@ -81,17 +81,27 @@ class DialogueEditor(View):
         node_name = "{}##{}".format(node_type, self.node_index)
 
         with simple.node(node_name):
+            # Id num
             with simple.node_attribute("ID##{0}".format(self.node_index), static=True):
                 core.add_text("ID: {}".format(self.node_index))
-            with simple.node_attribute("Input##{}".format(self.node_index)):
-                pass
 
+            # Input connection
+            core.add_node_attribute("Input##{}".format(self.node_index))
+
+            # Text input field
             with simple.node_attribute("TextBox##{}".format(self.node_index), static=True):
                 core.add_input_text("##Text_{}".format(
                     self.node_index), width=200, height=50, multiline=True)
 
+            # Output connection
             core.add_node_attribute(
                 "Output##{}".format(self.node_index), output=True)
+
+            # Checkbox for callback condition
+            with simple.node_attribute("HasCallback##{}".format(self.node_index), static=True):
+                core.add_checkbox("Has Callback##{}".format(self.node_index))
+
+            # Checkbox for end condition
             with simple.node_attribute("IsEnd##{}".format(self.node_index), static=True):
                 core.add_checkbox("Is End##{}".format(self.node_index))
 
